@@ -57,7 +57,6 @@ const App = () => {
     (todo: Todo) => !todo.isDone
   ).length;
 
-  // ▼▼ 追加
   const isValidTodoName = (name: string): string => {
     if (name.length < 2 || name.length > 32) {
       return "2文字以上、32文字以内で入力してください";
@@ -67,7 +66,7 @@ const App = () => {
   };
 
   const updateNewTodoName = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setNewTodoNameError(isValidTodoName(e.target.value)); // ◀◀ 追加
+    setNewTodoNameError(isValidTodoName(e.target.value));
     setNewTodoName(e.target.value);
   };
 
@@ -86,7 +85,6 @@ const App = () => {
   };
 
   const addNewTodo = () => {
-    // ▼▼ 編集
     const err = isValidTodoName(newTodoName);
     if (err !== "") {
       setNewTodoNameError(err);
@@ -200,7 +198,7 @@ const App = () => {
         </button>
       </div>
       
-      {/* ▼▼ 5. AddTodoModalコンポーネントを呼び出し、Propsを渡す */}
+      {/* AddTodoModalコンポーネントを呼び出し、Propsを渡す */}
       <AddTodoModal
         isOpen={showModal}
         onRequestClose={() => {

@@ -128,7 +128,7 @@ const AddTodoModal = (props: Props) => {
                                 ? dayjs(props.newTodoDeadline).format("YYYY-MM-DDTHH:mm:ss")
                                 : ""
                         }
-                        onChange={handleDeadlineChange} // 修正したハンドラーを使用
+                        onChange={handleDeadlineChange}
                         className="rounded-md border border-gray-400 px-2 py-0.5"
                     />
                 </div>
