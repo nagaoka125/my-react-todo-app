@@ -5,6 +5,7 @@ type Props = {
   todo: Todo;
   updateIsDone: (id: string, value: boolean) => void;
   remove: (id: string) => void;
+  edit: (todo: Todo) => void;
 };
 
 const TodoItem = (props: Props) => {
@@ -34,7 +35,13 @@ const TodoItem = (props: Props) => {
           <div className="text-sm text-gray-600">期限: 期限なし</div>
         )}
       </div>
-      <div>
+      <div className="flex items-center gap-2">
+        <button
+          onClick={() => props.edit(todo)}
+          className="rounded-md bg-blue-500 px-2 py-1 text-sm font-bold text-white hover:bg-blue-600"
+        >
+          編集
+        </button>
         <button
           onClick={() => props.remove(todo.id)}
           className="rounded-md bg-slate-200 px-2 py-1 text-sm font-bold text-white hover:bg-red-500"

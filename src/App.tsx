@@ -7,6 +7,7 @@ import AddTodoModal from "./AddTodoModal";
 import SortTodo from "./SortTodo";
 import { v4 as uuid } from "uuid";
 import Modal from "react-modal";
+import EditTodoModal from "./EditTodoModal";
 
 // モーダルのルート要素を設定
 Modal.setAppElement('#root');
@@ -18,6 +19,7 @@ const App = () => {
   const [newTodoPriority, setNewTodoPriority] = useState(3);
   const [newTodoDeadline, setNewTodoDeadline] = useState<Date | null>(null);
   const [newTodoNameError, setNewTodoNameError] = useState("");
+  const [editingTodo, setEditingTodo] = useState<Todo | null>(null);
 
   const [showModal, setShowModal] = useState(false);
   const [initialized, setInitialized] = useState(false);
@@ -106,6 +108,37 @@ const App = () => {
     setShowModal(false);
   };
 
+  const editTodo = (todo: Todo) => {
+    setEditingTodo(todo);
+    setShowModal(true);
+    setNewTodoName(todo.name);
+    setNewTodoPriority(todo.priority);
+    setNewTodoDeadline(todo.deadline);
+  };
+
+  const saveEditedTodo = () => {
+    if (!editingTodo) return;
+
+    const updatedTodos = todos.map((todo) => {
+      if (todo.id === editingTodo.id) {
+        return {
+          ...todo,
+          name: newTodoName,
+          priority: newTodoPriority,
+          deadline: newTodoDeadline,
+        };
+      }
+      return todo;
+    });
+
+    setTodos(updatedTodos);
+    setEditingTodo(null);
+    setShowModal(false);
+    setNewTodoName("");
+    setNewTodoPriority(3);
+    setNewTodoDeadline(null);
+  };
+
   const updateIsDone = (id: string, value: boolean) => {
     const updatedTodos = todos.map((todo) => {
       if (todo.id === id) {
@@ -146,7 +179,7 @@ const App = () => {
           新しいタスクを追加
         </button>
       </div>
-      <TodoList todos={filteredTodos} updateIsDone={updateIsDone} remove={remove} />
+      <TodoList todos={filteredTodos} updateIsDone={updateIsDone} remove={remove} edit={editTodo} />
 
       <button
         type="button"
@@ -171,8 +204,9 @@ const App = () => {
       <AddTodoModal
         isOpen={showModal}
         onRequestClose={() => {
-          setShowModal(false); // モーダルを閉じる
-          setNewTodoNameError(""); // 閉じる際にエラー表示をリセット
+          setShowModal(false);
+          setEditingTodo(null);
+          setNewTodoNameError("");
         }}
         
         // Stateの値 (Props)
@@ -185,7 +219,24 @@ const App = () => {
         updateNewTodoName={updateNewTodoName}
         updateNewTodoPriority={updateNewTodoPriority}
         updateNewTodoDeadline={updateDeadline} // 必須プロパティを追加
-        addNewTodo={addNewTodo} // タスク追加ロジック
+        addNewTodo={editingTodo ? saveEditedTodo : addNewTodo} // タスク追加ロジック
+      />
+
+      <EditTodoModal
+        isOpen={showModal}
+        onRequestClose={() => {
+          setShowModal(false);
+          setEditingTodo(null);
+          setNewTodoNameError("");
+        }}
+        todoName={newTodoName}
+        todoPriority={newTodoPriority}
+        todoDeadline={newTodoDeadline}
+        todoNameError={newTodoNameError}
+        updateTodoName={updateNewTodoName}
+        updateTodoPriority={updateNewTodoPriority}
+        updateTodoDeadline={updateDeadline}
+        saveTodo={editingTodo ? saveEditedTodo : addNewTodo}
       />
     </div>
   );
