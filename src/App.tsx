@@ -20,9 +20,36 @@ const App = () => {
   const [newTodoDeadline, setNewTodoDeadline] = useState<Date | null>(null);
   const [newTodoNameError, setNewTodoNameError] = useState("");
   const [editingTodo, setEditingTodo] = useState<Todo | null>(null);
+  const [initialized, setInitialized] = useState(false); // 初期化ステートを追加
 
-  const [showModal, setShowModal] = useState(false);
-  const [initialized, setInitialized] = useState(false);
+  const [showAddModal, setShowAddModal] = useState(false);
+  const [showEditModal, setShowEditModal] = useState(false);
+
+  const openAddModal = () => {
+    setShowAddModal(true);
+    setNewTodoName("");
+    setNewTodoPriority(3);
+    setNewTodoDeadline(null);
+    setNewTodoNameError("");
+  };
+
+  const openEditModal = (todo: Todo) => {
+    setEditingTodo(todo);
+    setShowEditModal(true);
+    setNewTodoName(todo.name);
+    setNewTodoPriority(todo.priority);
+    setNewTodoDeadline(todo.deadline);
+  };
+
+  const closeAddModal = () => {
+    setShowAddModal(false);
+  };
+
+  const closeEditModal = () => {
+    setShowEditModal(false);
+    setEditingTodo(null);
+  };
+
   const localStorageKey = "TodoApp";
   
   // App コンポーネントの初回実行時のみLocalStorageからTodoデータを復元
@@ -103,12 +130,12 @@ const App = () => {
     setNewTodoPriority(3);
     setNewTodoDeadline(null);
     setNewTodoNameError("");
-    setShowModal(false);
+    setShowAddModal(false);
   };
 
   const editTodo = (todo: Todo) => {
     setEditingTodo(todo);
-    setShowModal(true);
+    setShowEditModal(true);
     setNewTodoName(todo.name);
     setNewTodoPriority(todo.priority);
     setNewTodoDeadline(todo.deadline);
@@ -131,7 +158,7 @@ const App = () => {
 
     setTodos(updatedTodos);
     setEditingTodo(null);
-    setShowModal(false);
+    setShowEditModal(false);
     setNewTodoName("");
     setNewTodoPriority(3);
     setNewTodoDeadline(null);
@@ -171,7 +198,7 @@ const App = () => {
         <SortTodo todos={todos} setFilteredTodos={setFilteredTodos} />
         <button
           type="button"
-          onClick={() => setShowModal(true)}
+          onClick={openAddModal}
           className="rounded-md bg-green-500 px-3 py-1 font-bold text-white hover:bg-green-600 transition duration-150"
         >
           新しいタスクを追加
@@ -191,7 +218,7 @@ const App = () => {
       <div className="sticky bottom-4 flex justify-center">
         <button
           type="button"
-          onClick={() => setShowModal(true)}
+          onClick={openAddModal}
           className="rounded-md bg-green-500 px-3 py-1 font-bold text-white hover:bg-green-600 transition duration-150"
         >
           新しいタスクを追加
@@ -200,12 +227,8 @@ const App = () => {
       
       {/* AddTodoModalコンポーネントを呼び出し、Propsを渡す */}
       <AddTodoModal
-        isOpen={showModal}
-        onRequestClose={() => {
-          setShowModal(false);
-          setEditingTodo(null);
-          setNewTodoNameError("");
-        }}
+        isOpen={showAddModal}
+        onRequestClose={closeAddModal}
         
         // Stateの値 (Props)
         newTodoName={newTodoName}
@@ -217,16 +240,12 @@ const App = () => {
         updateNewTodoName={updateNewTodoName}
         updateNewTodoPriority={updateNewTodoPriority}
         updateNewTodoDeadline={updateDeadline} // 必須プロパティを追加
-        addNewTodo={editingTodo ? saveEditedTodo : addNewTodo} // タスク追加ロジック
+        addNewTodo={addNewTodo} // タスク追加ロジック
       />
 
       <EditTodoModal
-        isOpen={showModal}
-        onRequestClose={() => {
-          setShowModal(false);
-          setEditingTodo(null);
-          setNewTodoNameError("");
-        }}
+        isOpen={showEditModal}
+        onRequestClose={closeEditModal}
         todoName={newTodoName}
         todoPriority={newTodoPriority}
         todoDeadline={newTodoDeadline}
@@ -234,7 +253,7 @@ const App = () => {
         updateTodoName={updateNewTodoName}
         updateTodoPriority={updateNewTodoPriority}
         updateTodoDeadline={updateDeadline}
-        saveTodo={editingTodo ? saveEditedTodo : addNewTodo}
+        saveTodo={saveEditedTodo}
       />
     </div>
   );
