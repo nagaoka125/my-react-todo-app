@@ -108,7 +108,7 @@ const AddTodoModal = (props: Props) => {
                                 type="radio"
                                 value={value}
                                 checked={props.newTodoPriority === value}
-                                onChange={props.updateNewTodoPriority} // Propの関数を使用
+                                onChange={(e) => props.updateNewTodoPriority(e)}
                             />
                             <span>{value}</span>
                         </label>

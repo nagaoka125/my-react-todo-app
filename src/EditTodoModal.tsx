@@ -84,15 +84,15 @@ const EditTodoModal = (props: Props) => {
             <div className="font-bold">優先度</div>
             {[1, 2, 3].map((value) => (
                 <label key={value} className="flex items-center space-x-1">
-                <input
-                    id={`priority-${value}`}
-                    name="priorityGroup"
-                    type="radio"
-                    value={value}
-                    checked={props.todoPriority === value}
-                    onChange={props.updateTodoPriority}
-                />
-                <span>{value}</span>
+                    <input
+                        id={`priority-${value}`}
+                        name="priorityGroup"
+                        type="radio"
+                        value={value}
+                        checked={props.todoPriority === value}
+                        onChange={(e) => props.updateTodoPriority(e)} 
+                    />
+                    <span>{value}</span>
                 </label>
             ))}
         </div>
